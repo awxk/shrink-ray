@@ -61,13 +61,11 @@ class UserModel {
   }
 
   async loginUser(username: string, password: string): Promise<User | null> {
-    // Get the user account by their username
     const user = await this.getUserByUsername(username);
     if (!user) {
       return null;
     }
 
-    // Check the password
     const isPasswordMatch = await argon2.verify(user.passwordHash, password);
     if (!isPasswordMatch) {
       return null;

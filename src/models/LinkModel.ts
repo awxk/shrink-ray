@@ -59,20 +59,13 @@ class LinkModel {
   }
 
   async updateLinkVisits(link: Link): Promise<Link> {
-    // Create a copy of the link object
     const updatedLink = { ...link };
-
-    // Increment the link's number of hits property
     updatedLink.numHits += 1;
 
-    // Create a new date object and assign it to the link's `lastAccessedOn` property.
     const now = new Date();
     updatedLink.lastAccessedOn = now;
 
-    // Update the link's numHits and lastAccessedOn in the database
     const savedLink = await this.entityManager.save(updatedLink);
-
-    // return the updated link
     return savedLink;
   }
 

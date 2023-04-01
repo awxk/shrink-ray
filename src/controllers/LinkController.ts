@@ -93,22 +93,18 @@ class LinkController {
   async shortenUrl(req: Request, res: Response): Promise<void> {
     const { userId } = req.session;
 
-    // Make sure the user is logged in
     if (!userId) {
       res.sendStatus(401);
       return;
     }
 
-    // Retrieve the user's account data using their ID
     const user = await this.userModel.getUserById(userId);
 
-    // Check if you got back `null`
     if (!user) {
       res.sendStatus(401);
       return;
     }
 
-    // Check if the user is neither a "pro" nor an "admin" account
     const linkCount = await this.linkModel.getLinkCountByUserId(userId);
     if (!user.isPro && !user.isAdmin && linkCount >= 5) {
       res.status(403).send('You cannot generate more than 5 links with a free account');
@@ -181,19 +177,15 @@ class LinkController {
   getOriginalUrl = async (req: Request, res: Response): Promise<void> => {
     const { targetLinkId } = req.params;
 
-    // Retrieve the link data using the targetLinkId from the path parameter
     const link = await this.linkModel.getLinkById(targetLinkId);
 
-    // Check if you got back `null`
     if (!link) {
       res.sendStatus(404);
       return;
     }
 
-    // Call the appropriate function to increment the number of hits and the last accessed date
     await this.linkModel.updateLinkVisits(link);
 
-    // Redirect the client to the original URL
     res.redirect(301, link.originalUrl);
   };
 }
